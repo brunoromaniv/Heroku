@@ -14,35 +14,32 @@ module.exports = {
         
         var newDI = parser.parseXls2Json(caminho+ di_new)[0];
         relatorio = []
-        relatorioExcluidos = []
-        var caboExcluido = '';
+        var relatorioExcluidos = []
         var excluido;
-        console.log('chegou aqui')
+        var encontrado;
         
-         for(var v=0; v< oldDI.length; v++){
-         // if(v>0){
-            //if(oldDI[v].CableTAG != oldDI[v-1].CableTAG ){
-            this.cabosExcluidos(oldDI[v].CableTAG, newDI).then((result)=> {
-              caboExcluido = result
-             
-            });
+         for(var v=0; v < oldDI.length-1; v++){
+            encontrado = undefined
+            excluido = undefined
+            encontrado = newDI.find(el => el.CableTAG == oldDI[v].CableTAG);
         
-        //  }else{
-           // v++
-          //}
-           // }else{
-             //this.cabosExcluidos(oldDI[v].CableTAG, newDI).then((result2)=> {
-              //  caboExcluido = result2
-            //  });
-              if(caboExcluido == "Excluded"){
-             relatorioExcluidos.push([oldDI[v].CableTAG, caboExcluido])
-        console.log(caboExcluido)
+            if(encontrado == undefined){
+            excluido = oldDI.find(el => el.CableTAG == oldDI[v].CableTAG)
             }
             
-          
+            if(excluido){
+                
+              relatorioExcluidos.push([excluido.Nitem, excluido.CableTAG, excluido.Origem, excluido.Coluna_de_Origem, excluido.Doc_Referencia_Origem,
+              excluido.Regua_de_Origem, excluido.Borne_de_Origem, excluido.Condutor, excluido.Destino, excluido.Coluna_de_Destino, excluido.Doc_Referencia_Destino,
+            excluido.Regua_de_Destino, excluido.Borne_de_Destino, excluido.Formacao, excluido.Codigo, excluido.Bitola, excluido.Revisao, "Excluded"])
+
+             
+             }
             
+                 
        
         }
+        
        
       
         for(var n=0; n<newDI.length; n++){
@@ -55,7 +52,7 @@ module.exports = {
     if(alteracao[0] == "Equal"){
       if(newDI[n].Nitem > 1){
         for(var ab = newDI[n].Nitem ; ab > 1 ; ab = ab-1){
-          if(relatorio[n-ab+1][1] == "Changed"){
+          if(relatorio[n-ab+1][1] == "Changed" & relatorio[n-ab+1][2] == newDI[n].Revisao){
             alteracao[2] = "Changed"
             alteracao[1] = newDI[n].Revisao
           }
@@ -63,24 +60,38 @@ module.exports = {
         }
       }
       relatorio.push([newDI[n].CableTAG, alteracao[2], alteracao[1]])
-    }else {
+    }
+
       if(alteracao[0] == "Changed"){
+        // Ve que o cabo foi alterado na nova revisão.
+       
         if(newDI[n].Nitem > 1){
+          // Se o numero do item é maior que 2
           for(var ab = newDI[n].Nitem ; ab > 1 ; ab = ab-1){
+
             relatorio[n-ab+1][1] = "Changed"
+       
+            //relatorio[n -2 +1][1] = Changed
+            
             relatorio[n-ab+1][2] = newDI[n].Revisao
-          }
+           
+            //Relatório[n -2 +1] = Nova revisão.
+            //Relatorio[9]
+          } 
         }
+        relatorio.push([newDI[n].CableTAG, alteracao[2], alteracao[1]])
+      }
+     if (alteracao[0] == "Included"){
+      relatorio.push([newDI[n].CableTAG, alteracao[2], alteracao[1]])
+
       }
      
-    
-     relatorio.push([newDI[n].CableTAG, alteracao[0], newDI[n].Revisao])
     }
-  }
+  
 
   
-    console.log(relatorioExcluidos)
-    this.createExcelCompara(fonte, 'comparacaoDI', relatorio)
+    
+    this.createExcelCompara(fonte, 'comparacaoDI', relatorio, relatorioExcluidos)
     
     fs.readdir(caminho, (err, files) => {
         if (err) throw err;
@@ -135,23 +146,31 @@ module.exports = {
        ){
          
             tipoAlteracao = "Changed"
+            Revisao = cable.Revisao
+            Alteracao = "Changed"
             
            
            
           }else{
             tipoAlteracao = "Equal"
+            Revisao  = Revisao
+            Alteracao = Alteracao
             
           }
        
        
         }else{
           tipoAlteracao = "Included"
+          Revisao = cable.Revisao
+          Alteracao = "Included"
+       
         }
        
        
        }
        if(tipoAlteracao == 'Changed'){  
-       console.log(tipoAlteracao, cable.CableTAG)
+    
+       
        }
        return [tipoAlteracao, Revisao, Alteracao];
        
@@ -254,37 +273,28 @@ module.exports = {
            
             },
 
-        async  cabosExcluidos(TagCabo, cabosJson){
-            for(i=0; i<cabosJson.length-1; i++){
-           
-              if(cabosJson[i].CableTAG == TagCabo){
-               
-                i = cabosJson.length
-                tipoAlteracao = "Equal"
-                
-               
-              }else{
-                tipoAlteracao = "Excluded"
-              }
-           
-           
-            }
-                  
-            
-          //console.log(TagCabo, tipoAlteracao)
-           return tipoAlteracao
-         
+        async  cabosExcluidos(TagCabo, newDI, oldDI){
+          
+          encontrado = newDI.find(el => el.CableTAG == TagCabo);
+        
+          if(encontrado == undefined){
+          excluido = oldDI.find(el => el.CableTAG == TagCabo)
+          return(excluido)
+          
+          }
             },
 
-    async createExcelCompara(diretorio, excelName, vetor){
+    async createExcelCompara(diretorio, excelName, vetor, relatorioExcluidos){
             var wb = new ExcelJS.Workbook();
             var ws = wb.addWorksheet(excelName);
+            var wsExcluded = wb.addWorksheet("CabosExcluidos");
+            
       
            
                
             
             var compare =  vetor;
-            console.log(compare[1])
+            
             
             for(var a = 2; a< compare.length; a++){
                 
@@ -296,6 +306,34 @@ module.exports = {
                 row.getCell(3).value = compare[a-2][2];
 
                
+            }
+            if(relatorioExcluidos.length > 0){
+              for(var b = 2; b <relatorioExcluidos.length; b++){
+                var rowExcluded = wsExcluded.getRow(b)
+                rowExcluded.getCell(1).value = relatorioExcluidos[b-2][0]
+                rowExcluded.getCell(2).value = relatorioExcluidos[b-2][1]
+                rowExcluded.getCell(3).value = relatorioExcluidos[b-2][2]
+                rowExcluded.getCell(4).value = relatorioExcluidos[b-2][3]
+                rowExcluded.getCell(5).value = relatorioExcluidos[b-2][4]
+                rowExcluded.getCell(6).value = relatorioExcluidos[b-2][5]
+                rowExcluded.getCell(7).value = relatorioExcluidos[b-2][6]
+                rowExcluded.getCell(8).value = relatorioExcluidos[b-2][7]
+                rowExcluded.getCell(9).value = relatorioExcluidos[b-2][8]
+                rowExcluded.getCell(10).value = relatorioExcluidos[b-2][9]
+                rowExcluded.getCell(11).value = relatorioExcluidos[b-2][10]
+                rowExcluded.getCell(12).value = relatorioExcluidos[b-2][11]
+                rowExcluded.getCell(13).value = relatorioExcluidos[b-2][12]
+                rowExcluded.getCell(14).value = relatorioExcluidos[b-2][13]
+                rowExcluded.getCell(15).value = relatorioExcluidos[b-2][14]
+                rowExcluded.getCell(16).value = relatorioExcluidos[b-2][15]
+                rowExcluded.getCell(17).value = relatorioExcluidos[b-2][16]
+                rowExcluded.getCell(18).value = relatorioExcluidos[b-2][17]
+                rowExcluded.getCell(19).value = relatorioExcluidos[b-2][18]
+
+
+
+              }
+
             }
             await wb.xlsx.writeFile(diretorio + '/public/' + excelName + '.xlsx')
         .then(function(){
