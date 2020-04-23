@@ -307,7 +307,7 @@ module.exports = {
 
                
             }
-            if(relatorioExcluidos.length > 0){
+          /*  if(relatorioExcluidos.length > 0){
               for(var b = 2; b <relatorioExcluidos.length; b++){
                 var rowExcluded = wsExcluded.getRow(b)
                 rowExcluded.getCell(1).value = relatorioExcluidos[b-2][0]
@@ -334,7 +334,7 @@ module.exports = {
 
               }
 
-            }
+            } */
             await wb.xlsx.writeFile(diretorio + '/public/' + excelName + '.xlsx')
         .then(function(){
             console.log('done')
