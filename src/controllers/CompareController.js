@@ -206,7 +206,7 @@ module.exports = {
     
       
        
-        this.createExcelCompara(fonte, 'comparaLC', relatorio)
+        this.createExcelCompara(fonte, 'comparaLC', relatorio, relatorioExcluidos)
         
         fs.readdir(caminho, (err, files) => {
             if (err) throw err;
