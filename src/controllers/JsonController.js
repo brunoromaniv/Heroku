@@ -2,93 +2,29 @@ const fs = require('fs');
 var parser = require('fast-xml-parser');
 var he = require('he');
 const ExcelJS = require('exceljs');
-const returnValidation = {
-  KAD10107: '1'
-  ,
-  KAD10108: '1'
-  ,
-  KAD10109: '1'
-  ,
-  KAD10110: '1'
-  ,
-  KAD10111: '1'
-  ,
-  KAD10112: '1'
-  ,
-  KAD10113: '1'
-  ,
-  KAD10114: '1'
-  ,
-  KAD10115: '1'
-  ,
-  KAD10116: '1'
-  ,
-  KAD10202: '2'
-  ,
-  KAD10203: '2'
-  ,
-  KAD10204: '2'
-  ,
-  KAD10205: '2'
-  ,
-  KAD10206: '2'
-  ,
-  KAD10302: '3'
-  ,
-  KAD10303: '3'
-  ,
-  KAD10304: '3'
-  ,
-  KAD10305: '3'
-  ,
-  KAD10306: '3'
-  ,
-  KBA10608: '1'
-  ,
-  KBA10613: '1'
-  ,
-  KDP00201: '3'
-  ,
-  KDP00202: '3'
-  ,
-  KDP00203: '3'
-  ,
-  KDP00300: '4'
-  ,
-  KDP00302: '4'
-  ,
-  KDP00401: '5'
-  ,
-  KDP00501: '6'
-  ,
-  KDP00402: '5'
-  ,
-  KDP00403: '5'
-  ,
-  KDP00404: '5'
-  ,
-  KDP00406: '5'
-  ,
-  KDP00875: '9'
-  ,
-  KDP00901: '10'
-  ,
-  KDP00902: '10'
-  ,
-  KDP01001: '11'
-  ,
-  KNB00200: '7'
-  ,
-  KNB01200: '37'
-  ,
-   KDP02502: '26'
-  ,
-    KDP02501: '26'
-  ,
 
-
-  
+const numeroConexoes ={
+  KDP(codigo) {
+    return (parseInt(codigo.substr(4,2)) + 1)
+  },
+  KAD(codigo){
+    return (parseInt(codigo.substr(5,1)))
+  },
+  KFB(codigo){
+    return (parseInt(codigo.substr(6,2)))
+  },
+  KNB(codigo){
+    return ((parseInt(codigo.substr(4,2))*3)+1)
+  },
+  KVI(codigo){
+    return ((parseInt(codigo.substr(5,1))*2) +1)
+  },
+  KVF(codigo){
+      return 1
   }
+
+}
+
 
     module.exports = {
 
@@ -264,11 +200,14 @@ const returnValidation = {
  
         
     };
-
-    code = returnValidation[cableCode]
+    
     
  
    if(cableCode){
+    var prefixo
+    prefixo = cableCode.substr(0,3)
+  
+    code = numeroConexoes[prefixo](cableCode)
     if(code != (listacabos.EplanLabelling.Document.Page[j].Line.length -1)){
         
         var ab = {

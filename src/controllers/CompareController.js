@@ -183,13 +183,34 @@ module.exports = {
             var newLC = parser.parseXls2Json(caminho+ LC_new)[0];
             relatorio = []
             relatorioExcluidos = []
-            console.log('chegou aqui')
+            
+
+            for(var v=0; v < oldLC.length-1; v++){
+              encontrado = undefined
+              excluido = undefined
+              encontrado = newLC.find(el => el.CableTAG == oldLC[v].CableTAG);
+              
+              if(encontrado == undefined){
+              excluido = oldLC.find(el => el.CableTAG == oldLC[v].CableTAG)
+              }
+              
+              if(excluido){
+                  
+                relatorioExcluidos.push([excluido.Codigo, excluido.CableTAG, excluido.Origem, excluido.Coluna_de_Origem, excluido.Destino,
+              excluido.Coluna_de_Destino, excluido.Condutor, excluido.Formacao, excluido.Bitola, excluido.Distancia,excluido.Rota, excluido.Revisao, "Excluded"])
+  
+               
+               }
+              
+                   
+         
+          }
             for(n=0; n<newLC.length; n++){
     
       
         await this.comparaLC(newLC[n].CableTAG, newLC[n], oldLC).then((result)=> {
             alteracao = result
-            console.log(alteracao)
+           
   
             
         })
@@ -200,13 +221,13 @@ module.exports = {
         }else {
           relatorio.push([newLC[n].CableTAG, alteracao[0], newLC[n].Revisao])
         }
-        console.log(alteracao)
+  
          
       }
     
       
        
-        this.createExcelCompara(fonte, 'comparaLC', relatorio)
+        this.createExcelCompara(fonte, 'comparaLC', relatorio, relatorioExcluidos)
         
         fs.readdir(caminho, (err, files) => {
             if (err) throw err;
@@ -337,7 +358,7 @@ module.exports = {
             }
             await wb.xlsx.writeFile(diretorio + '/public/' + excelName + '.xlsx')
         .then(function(){
-            console.log('done')
+            console.log('done') 
           
 
       });
