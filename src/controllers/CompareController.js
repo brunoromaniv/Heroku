@@ -355,7 +355,7 @@ module.exports = {
 
               }
 
-            } 
+            }
             await wb.xlsx.writeFile(diretorio + '/public/' + excelName + '.xlsx')
         .then(function(){
             console.log('done') 
