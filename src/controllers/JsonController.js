@@ -21,6 +21,9 @@ const numeroConexoes ={
   },
   KVF(codigo){
       return 1
+  },
+  KBA(codigo){
+      return 1
   }
 
 }
