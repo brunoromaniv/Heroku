@@ -15,6 +15,7 @@ const CompareController = require('./src/controllers/CompareController')
 const JsonController = require('./src/controllers/JsonController');
 const multer = require('multer');
 var destino = path.join(__dirname, './uploads', 'Xml2.json');
+const GrafoController = require('./src/controllers/GrafoController')
 
 
 
@@ -74,6 +75,16 @@ const storageM = multer.diskStorage({
  
 	}
 });
+const storageMX = multer.diskStorage({
+	destination:function(req,file,cb){
+		cb(null,"./uploads/xlsx")
+	},
+	filename: function(req,file,cb){
+		cb(null,file.originalname);
+ 
+	}
+});
+
 
 var oldDI = ''
 var newDI = ''
@@ -89,7 +100,22 @@ app.post('/comparaDI', uploadM.any(), function(req,res){
  
 
   res.end();
+});
+
+
+const uploadMX = multer({storage: storageMX})
+app.post('/grafoVias', uploadMX.any(), async function(req,res){
+  var tamanho = req.files.length
+  var vias = req.files[tamanho-1].originalname;
+  
+
+  var caminho = __dirname + '/uploads/xlsx/'
+
+  testes = await GrafoController.transformaXLSX(vias, caminho )
+ 
+  res.json(testes)
 })
+
 
 
 const storageML = multer.diskStorage({
