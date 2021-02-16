@@ -116,6 +116,17 @@ app.post('/grafoVias', uploadMX.any(), async function(req,res){
   res.json(testes)
 })
 
+app.post('/shortestPath', async function(req,res){
+   
+    var origem = req.body.origem
+    var destino = req.body.destino
+ 
+
+
+    var shortestPath = await GrafoController.shortestPath(origem, destino)
+  res.json(shortestPath)
+})
+
 
 
 const storageML = multer.diskStorage({
