@@ -8,7 +8,7 @@ var teste;
 module.exports = {
   
 
-    async  transformaXLSX(arquivo ,caminho) {
+    async  transformaXLSX(arquivo ,caminho, caminhoJson) {
         
         var vias = await parser.parseXls2Json(caminho + arquivo)[0];
         fs.readdir(caminho, (err, files) => {
@@ -21,19 +21,20 @@ module.exports = {
             }
           });
           
-          fs.writeFileSync(caminho + 'vias.json', JSON.stringify(vias))
+          fs.writeFileSync(caminhoJson + 'vias.json', JSON.stringify(vias))
+      
           
-          this.shortestPath()
          
         return vias
 
     },
 
-    async shortestPath(origem, destino){
+    async shortestPath(origem, destino, classificacao){
       const route = new Graph()
-      let vias = require('../../uploads/xlsx/vias.json')
-     
+      let vias = require('../../uploads/viasJson/vias.json')
+     console.log(classificacao)
       for(var i=0; i < vias.length; i++){
+        if(vias[i].CLASSIFICACAO == classificacao){
         var conexoes = vias[i].CONEXOES.split(';')
         var conec = {}
         var conecV = {}
@@ -89,7 +90,7 @@ module.exports = {
     }
         
 
-       
+  }
       }
       console.log(origem, destino)
       var shortestPath = route.path(origem, destino, {cost: true})
