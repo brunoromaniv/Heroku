@@ -130,6 +130,31 @@ app.post('/shortestPath', async function(req,res){
   res.json(shortestPath)
 })
 
+app.post('/grafoViasDePara',uploadMX.any(), async function(req,res){
+
+  var tamanho = req.files.length
+  var vias = req.files[tamanho-1].originalname;
+  
+
+  var caminho = __dirname + '/uploads/xlsx/'
+  var caminhoRaiz = __dirname
+  var caminhoJson = __dirname + "/uploads/viasJson/"
+
+  testes = await GrafoController.transformaXLSXdePara(vias, caminho, caminhoJson, caminhoRaiz )
+
+  res.json("resposta: ok")
+  //console.log(testes)
+//  res.json(testes)
+})
+
+app.get('/grafoViasDeParaDownload', (req, res) => {
+    
+  var file = fs.createReadStream(path.join(__dirname , '/public', 'dePARA.xlsx'));
+  
+  file.pipe(res);
+ 
+
+});
 
 
 const storageML = multer.diskStorage({

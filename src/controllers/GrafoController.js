@@ -22,12 +22,54 @@ module.exports = {
           });
           
           fs.writeFileSync(caminhoJson + 'vias.json', JSON.stringify(vias))
-      
+          
           
          
         return vias
 
     },
+
+    async  transformaXLSXdePara(arquivo ,caminho, caminhoJson, caminhoRaiz) {
+        
+      var dePARA = await parser.parseXls2Json(caminho + arquivo)[0];
+      fs.readdir(caminho, (err, files) => {
+          if (err) throw err;
+        
+          for (const file of files) {
+            fs.unlink(path.join(caminho, file), err => {
+              if (err) throw err;
+            });
+          }
+        });
+        
+        var wb = new ExcelJS.Workbook();
+        var ws = wb.addWorksheet("DE_PARA");
+        
+
+      for(var i =0; i<dePARA.length; i++){
+       var menorCaminho = this.shortestPath(dePARA[i].DE,dePARA[i].PARA, dePARA[i].BANDEJA )
+       //console.log(menorCaminho.path)
+       var row = ws.getRow(i+1)
+       await menorCaminho.then(function(result){
+        
+         row.getCell(1).value = dePARA[i].DE
+              
+         row.getCell(2).value = dePARA[i].PARA
+         if(result.path != null){
+         row.getCell(3).value = result.path
+        
+         row.getCell(4).value = result.cost
+        }else{
+          row.getCell(3).value = "Rota não encontrada"
+        
+         row.getCell(4).value = result.cost
+        }
+       })
+      }
+       await wb.xlsx.writeFile(caminhoRaiz + '/public/' + "dePARA" + '.xlsx')
+      return dePARA
+
+  },
 
     async shortestPath(origem, destino, classificacao){
       const route = new Graph()
