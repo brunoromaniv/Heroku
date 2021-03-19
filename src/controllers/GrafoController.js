@@ -52,19 +52,28 @@ module.exports = {
         var secao = file[i].SECAO
         var conexoes = file[i].CONEXOES
         var conexoesSeparadas = conexoes.split(';')
-
+        var colunasSeparadas = coluna.split(';')
+        var paineisSeparados = painel.split(';')
         if(classificacao == undefined ||comprimento == undefined ||secao == undefined ||conexoes == undefined){
           verificaPaineleColuna.push("Favor verificar as colunas se estão sem caratecteres especiais.")
           return verificaPaineleColuna
         }
-        if(painel != "" && coluna == ""){
-          verificaPaineleColuna.push("Error: " + via + ": painel cadastrado sem coluna");
+        
+        
+        for(var w =0; colunasSeparadas.length > w; w++){
+          if(colunasSeparadas[w] == "" && paineisSeparados[w] != ""){
+            verificaPaineleColuna.push("Error: " + via + ": Painel cadastrado sem coluna");
+          }
+          if(colunasSeparadas[w] != "" && paineisSeparados[w] == ""){
+            verificaPaineleColuna.push("Error: " + via + ": Coluna cadastrada sem painel");
+          }
         }
+       
         if(via.indexOf("-") != -1 && via.length != 14){
           verificaPaineleColuna.push("Error: " + via + ": Via cadastrada está com nomenclatura errada");
         }else if(via.indexOf("-") == -1){
           verificaPaineleColuna.push("Warning: " + via +": Possui nome diferente do padrão, favor verificar.")
-        }else if(classVia != classificacao && classVia != "N" && classificacao != "D" && via.substr(6,2) != "CP"){
+        }else if(classVia != classificacao && classVia != "N" && classificacao != "D" && via.substr(5,2) != "CP"){
 
           verificaPaineleColuna.push("Error: " + via + ": Via cadastrada é diferente de sua classificação");
 
