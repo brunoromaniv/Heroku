@@ -33,14 +33,14 @@ module.exports = {
             teste: resultado
           }
           
-         console.log(resultado)
+       
         return resultado
 
     },
 
     async testFile(file){
       var verificaPaineleColuna = [];
-      console.log(file[0])
+      
       for(var i = 0; file.length > i ; i++){
         var painel = file[i].PAINEL
         var coluna = file[i].COLUNA
@@ -58,21 +58,25 @@ module.exports = {
           return verificaPaineleColuna
         }
         if(painel != "" && coluna == ""){
-          verificaPaineleColuna.push(via + ": painel cadastrado sem coluna");
+          verificaPaineleColuna.push("Error: " + via + ": painel cadastrado sem coluna");
         }
-        if(via.indexOf("-") == -1){
-          verificaPaineleColuna.push(via +": Possui nome diferente do padrão, favor verificar.")
-        }else if(classVia != classificacao && classVia != "N" && classificacao != "D"){
+        if(via.indexOf("-") != -1 && via.length != 14){
+          verificaPaineleColuna.push("Error: " + via + ": Via cadastrada está com nomenclatura errada");
+        }else if(via.indexOf("-") == -1){
+          verificaPaineleColuna.push("Warning: " + via +": Possui nome diferente do padrão, favor verificar.")
+        }else if(classVia != classificacao && classVia != "N" && classificacao != "D" && via.substr(6,2) != "CP"){
 
-          verificaPaineleColuna.push(via + ": Via cadastrada é diferente de sua classificação");
+          verificaPaineleColuna.push("Error: " + via + ": Via cadastrada é diferente de sua classificação");
 
         }
-
+        if(comprimento == 0){
+          verificaPaineleColuna.push("Error: " + via + ": Comprimento da Via está com valor nulo");
+        }
         if(comprimento < 0.4){
-          verificaPaineleColuna.push(via + ": Favor verificar o comprimento cadastrado para essa via");
+          verificaPaineleColuna.push("Warning: " + via + ": Favor verificar o comprimento cadastrado para essa via");
         }
         if(secao == 0){
-          verificaPaineleColuna.push(via + ": Via sem seção cadastrada")
+          verificaPaineleColuna.push("Error: " + via + ": Via sem seção cadastrada")
         }
         for(var j =0; conexoesSeparadas.length > j; j++){
           if(via == conexoesSeparadas[j]){
@@ -85,8 +89,8 @@ module.exports = {
         
       
     }
-
-    return verificaPaineleColuna
+    
+    return verificaPaineleColuna.sort()
       
     },
 
@@ -135,7 +139,7 @@ module.exports = {
     async shortestPath(origem, destino, classificacao){
       const route = new Graph()
       let vias = require('../../uploads/viasJson/vias.json')
-     console.log(classificacao)
+ 
       for(var i=0; i < vias.length; i++){
         if(vias[i].CLASSIFICACAO == classificacao){
         var conexoes = vias[i].CONEXOES.split(';')

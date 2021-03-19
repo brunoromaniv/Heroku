@@ -122,11 +122,11 @@ app.post('/shortestPath', async function(req,res){
     var origem = req.body.origem
     var destino = req.body.destino
     var classificacao = req.body.classificacao
-  console.log(classificacao)
+ 
 
 
     var shortestPath = await GrafoController.shortestPath(origem, destino, classificacao)
-    console.log(shortestPath)
+ 
   res.json(shortestPath)
 })
 
