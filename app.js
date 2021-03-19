@@ -112,9 +112,9 @@ app.post('/grafoVias', uploadMX.any(), async function(req,res){
   var caminho = __dirname + '/uploads/xlsx/'
   var caminhoJson = __dirname + "/uploads/viasJson/"
 
-  testes = await GrafoController.transformaXLSX(vias, caminho, caminhoJson )
- 
-  res.json(testes)
+  var resultado = await GrafoController.transformaXLSX(vias, caminho, caminhoJson )
+  
+  res.json(resultado)
 })
 
 app.post('/shortestPath', async function(req,res){

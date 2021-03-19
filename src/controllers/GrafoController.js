@@ -10,7 +10,7 @@ module.exports = {
 
     async  transformaXLSX(arquivo ,caminho, caminhoJson) {
         
-        var vias = await parser.parseXls2Json(caminho + arquivo)[0];
+        var viasJson = await parser.parseXls2Json(caminho + arquivo)[0];
         fs.readdir(caminho, (err, files) => {
             if (err) throw err;
           
@@ -20,13 +20,74 @@ module.exports = {
               });
             }
           });
+          var verificacao = this.testFile(viasJson)
+          var resultado;
+          await verificacao.then(function (val){
+            resultado = val
+          })
+          fs.writeFileSync(caminhoJson + 'vias.json', JSON.stringify(viasJson))
           
-          fs.writeFileSync(caminhoJson + 'vias.json', JSON.stringify(vias))
           
+          var resultado = {
+            vias: viasJson,
+            teste: resultado
+          }
           
-         
-        return vias
+         console.log(resultado)
+        return resultado
 
+    },
+
+    async testFile(file){
+      var verificaPaineleColuna = [];
+      console.log(file[0])
+      for(var i = 0; file.length > i ; i++){
+        var painel = file[i].PAINEL
+        var coluna = file[i].COLUNA
+        var via = file[i].VIA
+        var classVia = via.substr(6,1)
+        var classificacao = file[i].CLASSIFICACAO
+        
+        var comprimento = file[i].COMPRIMENTO
+        var secao = file[i].SECAO
+        var conexoes = file[i].CONEXOES
+        var conexoesSeparadas = conexoes.split(';')
+
+        if(classificacao == undefined ||comprimento == undefined ||secao == undefined ||conexoes == undefined){
+          verificaPaineleColuna.push("Favor verificar as colunas se estão sem caratecteres especiais.")
+          return verificaPaineleColuna
+        }
+        if(painel != "" && coluna == ""){
+          verificaPaineleColuna.push(via + ": painel cadastrado sem coluna");
+        }
+        if(via.indexOf("-") == -1){
+          verificaPaineleColuna.push(via +": Possui nome diferente do padrão, favor verificar.")
+        }else if(classVia != classificacao && classVia != "N" && classificacao != "D"){
+
+          verificaPaineleColuna.push(via + ": Via cadastrada é diferente de sua classificação");
+
+        }
+
+        if(comprimento < 0.4){
+          verificaPaineleColuna.push(via + ": Favor verificar o comprimento cadastrado para essa via");
+        }
+        if(secao == 0){
+          verificaPaineleColuna.push(via + ": Via sem seção cadastrada")
+        }
+        for(var j =0; conexoesSeparadas.length > j; j++){
+          if(via == conexoesSeparadas[j]){
+            verificaPaineleColuna.push(via+ ": A via possui em suas conexões ela mesma")
+          }
+        }
+
+        
+       
+        
+      
+    }
+
+    return verificaPaineleColuna
+      
     },
 
     async  transformaXLSXdePara(arquivo ,caminho, caminhoJson, caminhoRaiz) {
