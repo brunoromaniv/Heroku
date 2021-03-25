@@ -55,7 +55,7 @@ module.exports = {
         var colunasSeparadas = coluna.split(';')
         var paineisSeparados = painel.split(';')
         if(classificacao == undefined ||comprimento == undefined ||secao == undefined ||conexoes == undefined){
-          verificaPaineleColuna.push("Favor verificar as colunas se estão sem caratecteres especiais.")
+          verificaPaineleColuna.push("Favor verificar as colunas se estão sem caracteres especiais.")
           return verificaPaineleColuna
         }
         
@@ -178,6 +178,9 @@ module.exports = {
         if(painel != "" && (coluna != undefined || coluna != "")){
           
           conecV[painel+'-'+coluna] = dist
+          if(painel + '-' + coluna == origem){
+            var ViaConectada = via 
+          }
           route.addNode(via, conecV)
           
        
@@ -209,7 +212,13 @@ module.exports = {
   }
       }
       console.log(origem, destino)
+      console.log(ViaConectada)
       var shortestPath = route.path(origem, destino, {cost: true})
+
+      shortestPath.path.splice(0,1)
+      shortestPath.path.unshift(ViaConectada)
+      shortestPath.path.unshift(origem)
+      console.log(shortestPath)
       return shortestPath
       
 
