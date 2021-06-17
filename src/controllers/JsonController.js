@@ -211,7 +211,7 @@ const numeroConexoes ={
  
    if(cableCode){
     var prefixo
-    prefixo = s.substr(0,3)
+    prefixo = cableCode.substr(0,3)
   
     code = numeroConexoes[prefixo](cableCode)
     if(code != (listacabos.EplanLabelling.Document.Page[j].Line.length -1)){
