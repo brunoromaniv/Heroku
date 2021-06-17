@@ -33,7 +33,6 @@ module.exports = {
               excluido.Regua_de_Origem, excluido.Borne_de_Origem, excluido.Condutor, excluido.Destino, excluido.Coluna_de_Destino, excluido.Doc_Referencia_Destino,
             excluido.Regua_de_Destino, excluido.Borne_de_Destino, excluido.Formacao, excluido.Codigo, excluido.Bitola, excluido.Revisao, "Excluded"])
 
-             
              }
             
                  

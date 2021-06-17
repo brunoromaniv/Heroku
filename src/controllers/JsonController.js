@@ -24,6 +24,9 @@ const numeroConexoes ={
   },
   KBA(codigo){
       return 1
+  },
+  KFA(codigo){
+    return (parseInt(codigo.substr(7,1)))
   }
 
 }
@@ -208,7 +211,7 @@ const numeroConexoes ={
  
    if(cableCode){
     var prefixo
-    prefixo = cableCode.substr(0,3)
+    prefixo = s.substr(0,3)
   
     code = numeroConexoes[prefixo](cableCode)
     if(code != (listacabos.EplanLabelling.Document.Page[j].Line.length -1)){
