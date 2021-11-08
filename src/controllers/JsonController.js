@@ -78,10 +78,12 @@ const numeroConexoes ={
       var problemasDOC = 1;
       
       var listacabos =  json;
+      console.log(listacabos.EplanLabelling.Document.Page.Property)
       var LISTA = [];
     
     var a = 2;
     cableNumber = listacabos.EplanLabelling.Document.Page.length;
+    
    
     
     for (var j = 0; j < cableNumber-1; j++){
