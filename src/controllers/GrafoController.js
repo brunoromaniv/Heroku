@@ -43,7 +43,7 @@ module.exports = {
       
       for(var i = 0; file.length > i ; i++){
         var painel = file[i].PAINEL
-        var coluna = file[i].COLUNA
+        var coluna = (file[i].COLUNA).toString()
         var via = file[i].VIA
         var classVia = via.substr(6,1)
         var classificacao = file[i].CLASSIFICACAO
@@ -214,7 +214,7 @@ module.exports = {
       console.log(origem, destino)
       console.log(ViaConectada)
       var shortestPath = route.path(origem, destino, {cost: true})
-
+      console.log(shortestPath)
       shortestPath.path.splice(0,1)
       shortestPath.path.unshift(ViaConectada)
       shortestPath.path.unshift(origem)
