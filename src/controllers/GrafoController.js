@@ -160,7 +160,7 @@ module.exports = {
         var colunas = vias[i].COLUNA
         
         if(colunas != undefined){
-        var colunas = vias[i].COLUNA.split(';')
+        var colunas = ((vias[i].COLUNA).toString()).split(';')
       }
         
        
