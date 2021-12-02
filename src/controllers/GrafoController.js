@@ -219,7 +219,7 @@ module.exports = {
        for(i=0; i < vias.length; i++){
        a = vias[i].PAINEL.split(";");
        b = vias[i]
-       c = vias[i].COLUNA.split(";");
+       c = (vias[i].COLUNA).toString().split(";");
       
         for(j=0; j < a.length; j++ ){
           if(a[j] + "-" + c[j]  == origem){
