@@ -148,7 +148,7 @@ module.exports = {
     async shortestPath(origem, destino, classificacao){
       const route = new Graph()
       let vias =await  require('../../uploads/viasJson/vias.json')
-      console.log(vias)
+    
       for(var i=0; i < vias.length; i++){
         if(vias[i].CLASSIFICACAO == classificacao){
         var conexoes = vias[i].CONEXOES.split(';')
@@ -246,9 +246,10 @@ module.exports = {
       shortestPath.path.splice(0,1)
       shortestPath.path.unshift(ViaConectada)
       shortestPath.path.unshift(origem)
-      
+      console.log('Esse é o menor caminho calculado' + shortestPath)
       return shortestPath
     }else{
+      console.log('Esse é o menor caminho forçado' + menorCaminho)
       return menorCaminho
     }
 
