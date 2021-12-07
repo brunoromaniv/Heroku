@@ -160,12 +160,12 @@ module.exports = {
 
   },
 
-  async shortestPath(origem, destino, classificacao) {
-    const route = new Graph()
-    let vias = await require('../../uploads/viasJson/vias.json')
+    async shortestPath(origem, destino, classificacao){
+      const route = new Graph()
+      let vias =await  require('../../uploads/viasJson/vias.json')
     
-    for (var i = 0; i < vias.length; i++) {
-      if (vias[i].CLASSIFICACAO == classificacao) {
+      for(var i=0; i < vias.length; i++){
+        if(vias[i].CLASSIFICACAO == classificacao){
         var conexoes = vias[i].CONEXOES.split(';')
         var conec = {}
         var conecV = {}
@@ -218,43 +218,55 @@ module.exports = {
       }
     }
 
-    //verificação se a origem e destino estão conectadas na mesma via.
-    console.log(origem, destino)
-    var a = 0
-    var b = 0
-    var c = 0
-    for (i = 0; i < vias.length; i++) {
-      a = vias[i].PAINEL.split(";");
-      b = vias[i]
-      c = vias[i].COLUNA.split(";");
-
-      for (j = 0; j < a.length; j++) {
-        if (a[j] + "-" + c[j] == origem) {
-
-          if ((b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-"))) != -1) && (b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-"))) != -1)) {
-            console.log(b)
-            custo = parseFloat(b.COMPRIMENTO)
-            var menorCaminho = {
-              path: [origem, b.VIA, destino],
-              cost: custo
+  
+      
+    
+      console.log(origem, destino)
+        var a =0
+        var b= 0
+        var c = 0
+       for(i=0; i < vias.length; i++){
+       a = vias[i].PAINEL.split(";");
+       b = vias[i]
+       c = (vias[i].COLUNA).toString().split(";");
+      
+        for(j=0; j < a.length; j++ ){
+          if(a[j] + "-" + c[j]  == origem){
+            var OrigemSemColuna = b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-")))
+            var DestinoSemColuna = b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))
+            if((b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-"))) != -1) && (b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))!=-1) && (OrigemSemColuna !== DestinoSemColuna)){
+              console.log(b)
+              
+              custo = parseFloat(b.COMPRIMENTO)
+              var menorCaminho = {
+                path: [origem, b.VIA, destino],
+                cost: custo
+              }
             }
           }
 
         }
       }
-    }
+    
     if (menorCaminho == undefined) {
       var shortestPath = route.path(origem, destino, { cost: true })
       console.log(shortestPath)
       shortestPath.path.splice(0, 1)
       shortestPath.path.unshift(ViaConectada)
       shortestPath.path.unshift(origem)
-
+      console.log('Esse é o menor caminho calculado' + shortestPath)
       return shortestPath
-    } else {
+    }else{
+      console.log('Esse é o menor caminho forçado' + menorCaminho)
       return menorCaminho
     }
 
-
+    }
   }
-}
+
+
+
+
+
+  
+
