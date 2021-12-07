@@ -223,9 +223,9 @@ module.exports = {
       
         for(j=0; j < a.length; j++ ){
           if(a[j] + "-" + c[j]  == origem){
-            console.log(b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-"))))
-            console.log(b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-"))))
-            if((b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-"))) != -1) && (b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))!=-1)){
+            var OrigemSemColuna = b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-")))
+            var DestinoSemColuna = b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))
+            if((b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-"))) != -1) && (b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))!=-1) && (OrigemSemColuna !== DestinoSemColuna)){
               console.log(b)
               
               custo = parseFloat(b.COMPRIMENTO)
