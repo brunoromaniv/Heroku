@@ -232,9 +232,10 @@ module.exports = {
       
         for(j=0; j < a.length; j++ ){
           if(a[j] + "-" + c[j]  == origem){
-            var OrigemSemColuna = b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-")))
-            var DestinoSemColuna = b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))
-            if((b.PAINEL.indexOf(origem.substr(0, origem.indexOf("-"))) != -1) && (b.PAINEL.indexOf(destino.substr(0, destino.indexOf("-")))!=-1) && (OrigemSemColuna !== DestinoSemColuna)){
+            var OrigemSemColuna = b.PAINEL.indexOf(origem.substr(0, origem.lastIndexOf("-")))
+            var DestinoSemColuna = b.PAINEL.indexOf(destino.substr(0, destino.lastIndexOf("-")))
+            console.log(OrigemSemColuna, DestinoSemColuna)
+            if((OrigemSemColuna != -1) && (DestinoSemColuna!=-1) && (OrigemSemColuna !== DestinoSemColuna)){
               console.log(b)
               
               custo = parseFloat(b.COMPRIMENTO)
