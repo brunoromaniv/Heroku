@@ -100,7 +100,7 @@ module.exports = {
 
 
 
-
+    console.log('aqui')
     this.createExcelCompara(fonte, 'comparacaoDI', relatorio, relatorioExcluidos)
 
     fs.readdir(caminho, (err, files) => {
@@ -118,6 +118,7 @@ module.exports = {
 
   },
   async compara(TagCabo, Ncondutor, cable, cabosJson) {
+
     for (i = 0; i < cabosJson.length; i++) {
       
       if (cabosJson[i].CableTAG == TagCabo && cabosJson[i].Nitem == Ncondutor) {
@@ -138,7 +139,7 @@ module.exports = {
         var BorneDestino = cabosJson[i].Borne_de_Destino
         var Revisao = cabosJson[i].Revisao
         var Alteracao = cabosJson[i].Alteracao
-
+        var origemCompara = []
         
         
         origemCompara.push(cable.Origem != Origem ? "true" : "false")
@@ -347,16 +348,15 @@ module.exports = {
 
     var compare = vetor;
 
-    console.log(compare[0][17]    ,
-    compare[0][11]   )
+  
    
     for (var a = 2; a < compare.length; a++) {
-      if(excelName = 'comparacaoDI'){
+      if(excelName == 'comparacaoDI'){
      
         mudancas =  compare[a-2][17]
    
     }
-      if(excelName = "comparaLC"){
+      if(excelName == "comparaLC"){
      
         mudancas =  compare[a-2][11]
       }
@@ -416,6 +416,7 @@ module.exports = {
       }
 
     }
+    console.log(diretorio + '/public/' + excelName + '.xlsx')
     await wb.xlsx.writeFile(diretorio + '/public/' + excelName + '.xlsx')
       .then(function () {
         console.log('done')
