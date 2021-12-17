@@ -106,18 +106,20 @@ module.exports = {
     fs.readdir(caminho, (err, files) => {
       if (err) throw err;
 
-      for (const file of files) {
+      
+
+       for (const file of files) {
         fs.unlink(path.join(caminho, file), err => {
           if (err) throw err;
         });
-      }
+      } 
     });
 
 
   },
   async compara(TagCabo, Ncondutor, cable, cabosJson) {
     for (i = 0; i < cabosJson.length; i++) {
-
+      
       if (cabosJson[i].CableTAG == TagCabo && cabosJson[i].Nitem == Ncondutor) {
 
         var Codigo = cabosJson[i].Codigo
@@ -137,9 +139,10 @@ module.exports = {
         var Revisao = cabosJson[i].Revisao
         var Alteracao = cabosJson[i].Alteracao
 
-        var origemCompara = []
-        origemCompara.push("false")
+        
+        
         origemCompara.push(cable.Origem != Origem ? "true" : "false")
+        origemCompara.push("false")
         origemCompara.push(cable.Coluna_de_Origem != Corigem ? "true" : "false")
         origemCompara.push("false")
         origemCompara.push(cable.Regua_de_Origem != ReguaOrigem ? "true" : "false")
@@ -230,9 +233,13 @@ module.exports = {
 
 
       if (alteracao[0] == "Equal") {
-        relatorio.push([newLC[n].CableTAG, alteracao[2], alteracao[1]])
+        relatorio.push([newLC[n].Codigo, newLC[n].CableTAG, newLC[n].Origem, newLC[n].Coluna_de_Origem, newLC[n].Destino, newLC[n].Coluna_de_Destino, newLC[n].Condutor, 
+        newLC[n].Formacao, newLC[n].Bitola, alteracao[2], alteracao[1], alteracao[3]])
+        //relatorio.push([newLC[n].CableTAG, alteracao[1], alteracao[2]])
       } else {
-        relatorio.push([newLC[n].CableTAG, alteracao[0], newLC[n].Revisao])
+        relatorio.push([newLC[n].Codigo, newLC[n].CableTAG, newLC[n].Origem, newLC[n].Coluna_de_Origem, newLC[n].Destino, newLC[n].Coluna_de_Destino, newLC[n].Condutor, 
+        newLC[n].Formacao, newLC[n].Bitola, alteracao[2], alteracao[1], alteracao[3]])
+      //  relatorio.push([newLC[n].CableTAG, alteracao[0], newLC[n].Revisao])
       }
 
 
@@ -256,7 +263,7 @@ module.exports = {
   },
   async comparaLC(TagCabo, cable, cabosJson) {
     for (i = 0; i < cabosJson.length; i++) {
-
+      
       if (cabosJson[i].CableTAG == TagCabo) {
 
         var Codigo = cabosJson[i].Codigo
@@ -272,38 +279,49 @@ module.exports = {
         var Revisao = cabosJson[i].Revisao
         var Alteracao = cabosJson[i].Alteracao
         i = cabosJson.length;
-        if (
-          cable.Origem != Origem ||
-          cable.Codigo != Codigo ||
-          cable.Coluna_de_Origem != Corigem ||
-          cable.Destino != Destino ||
-          cable.Coluna_de_Destino != Cdestino ||
-          cable.Formacao != formacao ||
-          cable.Bitola != bitola ||
-          cable.Distancia != Distancia ||
-          cable.Rota != Rota ||
-          cable.Condutor != Condutor
-        ) {
+        var origemCompara = []
+        origemCompara.push("false")
+        origemCompara.push(cable.Codigo != Codigo ? "true" : "false")    
+        origemCompara.push(cable.Origem != Origem ? "true" : "false")
+        origemCompara.push(cable.Coluna_de_Origem != Corigem ? "true" : "false")
+        origemCompara.push(cable.Destino != Destino ? "true" : "false")
+        origemCompara.push(cable.Coluna_de_Destino != Cdestino ? "true" : "false")
+        origemCompara.push(cable.Condutor != Condutor ? "true" : "false")
+        origemCompara.push(cable.Formacao != formacao ? "true" : "false")
+        origemCompara.push(cable.Bitola != bitola ? "true" : "false")
+        origemCompara.push(cable.Distancia != Distancia ? "true" : "false")
+        origemCompara.push(cable.Rota != Rota ? "true" : "false")
+        
+        
+        var temAlteracao = origemCompara.find(el => el == "true");
+
+        if (temAlteracao != undefined) {
 
           tipoAlteracao = "Changed"
+          Revisao = cable.Revisao
+          Alteracao = "Changed"
 
 
 
         } else {
           tipoAlteracao = "Equal"
+          Revisao = Revisao
+          Alteracao = Alteracao
 
         }
 
 
       } else {
         tipoAlteracao = "Included"
+        Revisao = cable.Revisao
+        Alteracao = "Included"
       }
 
 
     }
-
+    
     //return tipoAlteracao;
-    return [tipoAlteracao, Revisao, Alteracao];
+    return [tipoAlteracao, Revisao, Alteracao, origemCompara];
 
   },
 
@@ -322,27 +340,36 @@ module.exports = {
     var wb = new ExcelJS.Workbook();
     var ws = wb.addWorksheet(excelName);
     var wsExcluded = wb.addWorksheet("CabosExcluidos");
-
+    var mudancas;
 
 
 
 
     var compare = vetor;
-    
+
+    console.log(compare[0][17]    ,
+    compare[0][11]   )
    
     for (var a = 2; a < compare.length; a++) {
-      
-      if(compare[a-2][17] != undefined){
-      mudancas =  compare[a-2][17]
-      
+      if(excelName = 'comparacaoDI'){
+     
+        mudancas =  compare[a-2][17]
+   
+    }
+      if(excelName = "comparaLC"){
+     
+        mudancas =  compare[a-2][11]
       }
       
+    
+    
+    
       var row = ws.getRow(a)
       for ( var b = 1; b < compare[a-2].length; b++){
         
         row.getCell(b).value = compare[a-2][b-1];
        
-        if(mudancas[b-1] == "true"){
+         if(mudancas != undefined && mudancas[b-1] == "true" ){
         
           row.getCell(b).fill =  {
             type: 'pattern',
@@ -351,7 +378,7 @@ module.exports = {
             bgColor: {argb: 'FF0000FF'}
          
                  }
-                }
+                } 
 
       }
     /*   row.getCell(1).value = compare[a - 2][0];
