@@ -87,16 +87,29 @@ module.exports = {
           newDI[n].Regua_de_Destino, newDI[n].Borne_de_Destino, newDI[n].Formacao, newDI[n].Codigo, newDI[n].Bitola, alteracao[2], alteracao[1], alteracao[3]])
           
         }
+      
       if (alteracao[0] == "Included") {
+     
        /*  relatorio.push([newDI[n].CableTAG, alteracao[2], alteracao[1], alteracao[3]]) */
        relatorio.push([newDI[n].CableTAG, newDI[n].Origem, newDI[n].Coluna_de_Origem, newDI[n].Doc_Referencia_Origem,
         newDI[n].Regua_de_Origem, newDI[n].Borne_de_Origem, newDI[n].Condutor, newDI[n].Destino, newDI[n].Coluna_de_Destino, newDI[n].Doc_Referencia_Destino,
         newDI[n].Regua_de_Destino, newDI[n].Borne_de_Destino, newDI[n].Formacao, newDI[n].Codigo, newDI[n].Bitola, alteracao[2], alteracao[1], alteracao[3]])
 
-      }
-     
-
+      
     }
+     
+    }
+
+    //função para encontrar cabos que sofreram alteração de código, aumentando o numero de condutores.
+for(var i = 1; relatorio.length > i; i++){
+  if(relatorio[i][0] == relatorio[i-1][0] && relatorio[i][15] != relatorio[i-1][15]){
+
+    relatorio[i][0] = relatorio[i-1][0]
+    relatorio[i][15] = relatorio[i-1][15]
+    relatorio[i][16] = relatorio[i-1][16]
+    
+  }
+}
 
 
 
