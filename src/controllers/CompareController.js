@@ -107,7 +107,7 @@ for(var i = 1; relatorio.length > i; i++){
     relatorio[i][0] = relatorio[i-1][0]
     relatorio[i][15] = relatorio[i-1][15]
     relatorio[i][16] = relatorio[i-1][16]
-    
+    relatorio[i][17] = ["false","false","false","false","false","false","false","false","false","false","false","false","false","true","false"]
   }
 }
 
@@ -305,7 +305,7 @@ for(var i = 1; relatorio.length > i; i++){
         origemCompara.push(cable.Bitola != bitola ? "true" : "false")
         origemCompara.push(cable.Distancia != Distancia ? "true" : "false")
         origemCompara.push(cable.Rota != Rota ? "true" : "false")
-        
+       
         
         var temAlteracao = origemCompara.find(el => el == "true");
 
